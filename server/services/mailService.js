@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import User from '../models/User.js';
-
-import ResetPasswordToken from '../models/resetPassworToken.js';
+import ResetPasswordToken from '../models/resetPasswordToken.js';
+import verifyEmailToken from '../models/verifyEmailToken.js';
 
 class MailService {
 
@@ -17,7 +17,7 @@ class MailService {
         })
     }
 
-    async sendActivationMail(to, token, link) {
+    async sendResetPasswordMail(to, token, link) {
         const user = await User.findOne({ email: to });
         if (!user) throw new Error("User not found!");
 
@@ -35,6 +35,30 @@ class MailService {
                 `
                     <div>
                         <h1>Для смены пароля</h1>
+                        <a href="${link}">${link}</a>
+                    </div>
+                `
+        })
+    }
+
+    async sendVerificationMail(to, token, link) {
+        const user = await User.findOne({ email: to });
+        if (!user) throw new Error("User not found!");
+
+        const verifyToken = new verifyEmailToken({
+            userId: user._id,
+            token: token
+        });
+        await verifyToken.save();
+        await this.transporter.sendMail({
+            from: process.env.SMTP_USER,
+            to,
+            subject: 'Верификация на ' + process.env.API_URL,
+            text: '',
+            html:
+                `
+                    <div>
+                        <h1>Для верификации</h1>
                         <a href="${link}">${link}</a>
                     </div>
                 `

@@ -3,11 +3,37 @@ import tokenService from './tokenService.js';
 import mailService from './mailService.js';
 import UserDto from '../dto/UserDto.js';
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from "uuid";
-import  ResetPasswordToken from '../models/resetPassworToken.js';
+import fileUpload from 'express-fileupload';
+import path from "path";
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class userService {
-    async registration(login, password, full_name, email) {
+
+    async getAllUsers() {
+        const users = await User.find();
+        return users;
+    }
+
+    async getUserById(userId) {
+        try {
+            const user = await User.findById(userId);
+            if (!user) {
+                console.log("User not found");
+                return null;
+            }
+            // console.log("User found:", user);
+            return user;
+        } catch (error) {
+            throw new Error("Error getting user by id:");
+        }
+    }
+
+    async createUser(login, password, email, role) {
         try {
             const check_login = await User.findOne({ login: login });
             const check_email = await User.findOne({ email: email });
@@ -20,95 +46,96 @@ class userService {
                 throw new Error("Email already exists!");
             }
 
+            console.log("Login:", login)
+            console.log("Password to hash:", password);
+
             const saltRounds = 10; // you can adjust this number based on your security requirement
             const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+
             const user = await User.create({
                 login,
                 password_hash: hashedPassword,
-                full_name,
-                email
+                email,
+                role
             });
+            console.log("User:", user);
+
             const userDto = new UserDto(user);
-            const tokens = tokenService.generateTokens({ ...userDto });
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
 
             return {
                 message: 'User created successfully',
                 userId: user._id,
-                tokens,
                 user: userDto
             };
         } catch (error) {
+            console.error("Error creating user:", error);
             throw error;
         }
     }
 
-    async login(login, password) {
-        const user = await User.findOne({
-            $or: [
-                { login: login },
-                { email: login }
-            ]
-        });
-
-        if (!user) {
-            // Пользователь с таким именем пользователя или email не существует
-            throw new Error("User not found!");
-        }
-        const isPasswordMatch = await bcrypt.compare(password, user.password_hash);
-
-        if (!isPasswordMatch) {
-            // Пароль не совпадает, отправьте сообщение об ошибке
-            throw new Error("Incorrect password!");
-        }
-
-        const userDto = new UserDto(user);
-        const tokens = tokenService.generateTokens({ ...userDto });
-
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
-
-        return {
-            message: "Authentication successful",
-            tokens,
-            user: userDto
-        };
-
-    }
-
-    async changePasswrod(token, newPassword) {
-        const resetTokenEntry = await ResetPasswordToken.findOne({ token });
-
-        if (!resetTokenEntry) {
-           throw new Error("Invalid or expired password reset token!");
-        }
-
-        const user = await User.findById(resetTokenEntry.userId);
-        if (!user) {
-            throw new Error("User not found!");
-        }
-        
-        const saltRounds = 10; // you can adjust this number based on your security requirement
-        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-        user.password_hash = hashedPassword; // Здесь вы должны также хешировать пароль!
-        await user.save();
-
-        await ResetPasswordToken.findByIdAndDelete(resetTokenEntry._id); // Удаляем использованный токен
-    }
-
-    async logout(refreshToken) {
-        const token = await tokenService.removeToken(refreshToken);
-        return token;
-    }
-
-    async resetPassword(email) {
+    async uploadUserAvatar(userId, file) {
         try {
-            const token = uuidv4();
-            await mailService.sendActivationMail(email, token, `${process.env.API_URL}/api/auth/${token}`);
-            return { message: "Password reset link sent to email" };
+            const user = await this.getUserById(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            let avatar = file;
+            let uploadPath = path.join(__dirname, "..", "uploads", avatar.name); // Adjust the path if needed
+
+            // Using Promises for better error handling
+            await new Promise((resolve, reject) => {
+                avatar.mv(uploadPath, (err) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
+            });
+
+            user.profile_picture_path = uploadPath;  // Use uploadPath here
+            await user.save();
+
+            console.log("Avatar updated for user:", user);
+            return user;
         } catch (error) {
+            console.error("Error uploading user avatar:", error);
             throw error;
         }
     }
+
+    async updateUser(userId, userData) {
+        try {
+            // Ищем пользователя по ID и обновляем его
+            const user = await User.findByIdAndUpdate(userId, userData, { new: true });
+
+            // Если пользователь не найден, возвращаем null или выбрасываем ошибку
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            return user; // Возвращаем обновленного пользователя
+        } catch (error) {
+            console.error("Error in updateUser:", error);
+            throw error; // Передаем ошибку на уровень выше, чтобы контроллер мог ее обработать
+        }
+    }
+
+
+    async deleteUser(userId) {
+        try {
+            const user = await this.getUserById(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            await User.findByIdAndDelete(userId);
+            return user;
+        } catch (error) {
+            console.error("Error in deleteUser:", error);
+            throw error;
+        }
+    }
+
+
 }
 
 export default new userService();

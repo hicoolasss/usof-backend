@@ -45,6 +45,9 @@ app.use((req, res, next)=>{
     res.status(404).send("Not Found");
 });
 
+app.use('/uploads', express.static('uploads'));
+
+
 io.on('connection', (socket) => {
     socketRouter(io, socket);
 });
