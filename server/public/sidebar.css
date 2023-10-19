@@ -1,0 +1,155 @@
+:root {
+    --topbar-color: #8996A7;
+    --sidebar-bg-color: #111213;
+    --sidebar-color: #8996A7;
+    --sidebar-link-color: #DFEAFF;
+    --topbar-bg-color: #131313;
+    --user-list-bg-color: #1A1A1E;
+    /* #343a40 */
+}
+
+section[data-css="sidebar"] {
+    background-color: var(--sidebar-bg-color) !important;
+    color: var(--sidebar-color);
+    border: none;
+}
+
+section[data-css="topbar"] {
+    background: var(--topbar-bg-color);
+    border: 1px solid var(--topbar-bg-color);
+}
+
+section[data-css="User-list"] {
+    background: var(--user-list-bg-color);
+}
+
+section[data-css="User-list-breadcrumbs"] a:first-child {
+    color: #ced9f8;
+}
+
+section[data-css="User-list-breadcrumbs"] a:last-child {
+    color: #8e9deb;
+}
+
+section[data-css="User-list-breadcrumbs"] h2:first-child {
+    color: #EDEEF1;
+}
+
+section[data-css="sidebar"] svg {
+    fill: var(--sidebar-color) !important;
+}
+
+a[data-css="sidebar-logo"] {
+    background-color: var(--sidebar-bg-color) !important;
+}
+
+section[data-css="sidebar-resources"] {
+    background: var(--sidebar-bg-color) !important;
+}
+
+section[data-css="User-list-table-wrapper"] {
+    background: #151419 !important;
+    color: var(--sidebar-color);
+}
+
+section[data-css="User-list-table-wrapper"] table {
+    background: #1A1A1E !important;
+    border: 1px solid #39383D !important;
+}
+
+section[data-css="User-table-row"] {
+    background: #202329 !important;
+    border: 1px solid #39383D !important;
+}
+
+tr[data-css="User-table-head-row"] td a{
+    color: var(--sidebar-link-color);
+}
+
+th, td {
+    border: 1px solid #202329 !important;
+}
+
+td section{
+    color: rgb(181, 181, 181);;
+}
+
+section[data-css="app-content"] {
+    background-color: var(--user-list-bg-color) !important;
+}
+
+[data-css="sidebar-logo"] {
+    content: url("../uploads/3-singes-png.png") !important;
+}
+
+
+[data-css="sidebar"] section a {
+    background: var(--sidebar-bg-color) !important;
+    color: var(--sidebar-color);
+}
+
+[data-css="sidebar"] a:hover {
+    color: var(--sidebar-link-color);
+}
+
+.adminjs_H2 {
+    color: #EDEEF1;
+}
+
+
+section[data-css="Users tokens-list-table-wrapper"] {
+    background: #151419 !important;
+    color: var(--sidebar-color);
+}
+
+section[data-css="Users tokens-list-table-wrapper"] table {
+    background: #1A1A1E !important;
+    border: 1px solid #39383D !important;
+}
+
+section[data-css="Users tokens-table-row"] {
+    background: #202329 !important;
+    border: 1px solid #39383D !important;
+}
+
+tr[data-css="Users tokens-table-head-row"] td a{
+    color: var(--sidebar-link-color);
+}
+
+section[data-css="Like-list-table-wrapper"] {
+    background: #151419 !important;
+    color: var(--sidebar-color);
+}
+
+section[data-css="Like-list-table-wrapper"] table {
+    background: #1A1A1E !important;
+    border: 1px solid #39383D !important;
+}
+
+section[data-css="Like-table-row"] {
+    background: #202329 !important;
+    border: 1px solid #39383D !important;
+}
+
+tr[data-css="Like-table-head-row"] td a{
+    color: var(--sidebar-link-color);
+}
+
+section[data-css="Post-list-table-wrapper"] {
+    background: #151419 !important;
+    color: var(--sidebar-color);
+}
+
+section[data-css="Post-list-table-wrapper"] table {
+    background: #1A1A1E !important;
+    border: 1px solid #39383D !important;
+}
+
+section[data-css="Post-table-row"] {
+    background: #202329 !important;
+    border: 1px solid #39383D !important;
+}
+
+tr[data-css="Post-table-head-row"] td a{
+    color: var(--sidebar-link-color);
+}

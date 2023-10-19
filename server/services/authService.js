@@ -20,6 +20,7 @@ class authService {
             }
             console.log("Login:", login)
             console.log("Password to hash:", password);
+            
             const saltRounds = 10; // you can adjust this number based on your security requirement
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             const user = await User.create({
@@ -27,6 +28,7 @@ class authService {
                 password_hash: hashedPassword,
                 email
             });
+
             const userDto = new UserDto(user);
             const tokens = tokenService.generateTokens({ ...userDto });
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
