@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 import tokenService from './tokenService.js';
 import mailService from './mailService.js';
-import UserDto from '../dto/UserDto.js';
+import UserDto from '../dto/userDto.js';
 import bcrypt from 'bcrypt';
 import  ResetPasswordToken from '../models/resetPasswordToken.js';
 
