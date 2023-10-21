@@ -13,7 +13,7 @@ export default class postController {
             return res.json(postData);
         } catch (error) {
             console.error("Error in createPost:", error);
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
     }
 
@@ -29,7 +29,7 @@ export default class postController {
             return res.json(likeData);
 
         } catch (error) {
-            res.status(500).json({ message: 'Internal server error' });
+            return res.status(500).json({ message: 'Internal server error' });
         }
 
     }
@@ -42,7 +42,7 @@ export default class postController {
 
             const updated_post = await postService.updatePost(postId, userId, req.body);
 
-            res.json(updated_post);
+            return res.json(updated_post);
         } catch (error) {
             console.error(error);
             if (error.message === 'Post not found') {
@@ -53,6 +53,7 @@ export default class postController {
             // Ответ уже был отправлен в одном из условий выше, если ни одно из условий не было выполнено, то отправляем 500 ошибку.
             return res.status(500).send({ message: 'Произошла ошибка при обновлении поста' });
         }
+
     }
 
     static async deletePost(req, res) {

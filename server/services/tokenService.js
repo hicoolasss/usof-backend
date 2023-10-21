@@ -53,13 +53,13 @@ class TokenService {
     }
 
     async findToken(refreshToken) {
-        console.log("finding token:", refreshToken);
         try {
             const tokenData = await tokenModel.findOne({ refreshToken });
             console.log("tokenData:", tokenData);
             return tokenData;
         } catch (error) {
             console.error("Error finding token:", error);
+            throw error;
         }
     }
 

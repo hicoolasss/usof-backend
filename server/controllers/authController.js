@@ -78,7 +78,10 @@ export default class authController {
             return res.json(userData);
         } catch (error) {
             console.error('Ошибка при обновлении токена:', error);
+            return res.status(500).json({ message: "Ошибка при обновлении токена", error: error.message });
         }
+
+        
     }
 
     static async resetPassword(req, res) {
@@ -87,6 +90,7 @@ export default class authController {
 
             const token = uuidv4();
             await mailService.sendResetPasswordMail(email, token, `${process.env.API_URL}/api/auth/password-reset/${token}`);
+            
             return res.json({ message: "Password reset link sent to email" });
 
         } catch (error) {
@@ -119,11 +123,12 @@ export default class authController {
             }
 
             // Здесь вы можете отобразить форму для ввода нового пароля или сделать другие действия.
-            res.send('Here you can enter your new password');
+            return res.send('Here you can enter your new password');
         } catch (error) {
             console.error('Error during entering new password change:', error);
             return res.status(500).json({ message: error.message });
         }
+
     }
 
 
@@ -159,12 +164,13 @@ export default class authController {
             user.is_email_verified = true;
             await user.save();  // Сохраняем изменения
 
-            res.send('Your email successfully verified');
+            return res.send('Your email successfully verified');
 
         } catch (error) {
             console.error('Error during email verification:', error);
             return res.status(500).json({ message: error.message });
         }
+
     }
 
 

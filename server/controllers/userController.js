@@ -12,9 +12,8 @@ export default class userController {
             return res.json(users);
         } catch (error) {
             console.error("Error in getUsers:", error);
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
-        return res.json({ message: "Get Users" });
     }
 
     static async getUserById(req, res) {
@@ -25,9 +24,8 @@ export default class userController {
             return res.json(user);
         } catch (error) {
             console.error("Error in getUserById:", error);
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
-        return res.json({ message: "Get User by ID" });
     }
 
     static async createUserForAdmin(req, res) {
@@ -41,9 +39,8 @@ export default class userController {
             return res.json(userData);
         } catch (error) {
             console.error("Error in createUserForAdmin:", error);
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
-        return res.json({ message: "Create User" });
     }
 
     static async uploadUserAvatar(req, res) {
@@ -57,9 +54,8 @@ export default class userController {
             return res.json({ message: "Avatar successfully uploaded" });
         } catch (error) {
             console.error("Error in uploadUserAvatar:", error);
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
-        return res.json({ message: "Upload user avatar" });
     }
 
     static async updateUser(req, res) {
@@ -77,9 +73,9 @@ export default class userController {
             return res.json({ message: "User successfully updated", user: updatedUser });
         } catch (error) {
             console.error("Error in updateUser:", error);
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
-        return res.json({ message: "Update User" });
+       
     }
 
     static deleteUser(req, res) {
@@ -96,8 +92,8 @@ export default class userController {
             return res.json({ message: "User successfully deleted" });
         } catch (error) {
             console.error("Error in deleteUser:", error);
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
-        return res.json({ message: "Delete User" });
+    
     }
 }
