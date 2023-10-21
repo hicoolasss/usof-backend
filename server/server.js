@@ -14,6 +14,7 @@ import AdminJS from 'adminjs'
 import AdminJSExpress from '@adminjs/express'
 import { Database, Resource } from '@adminjs/mongoose';
 
+import errorHandler from './middlewares/errorHandler.js';
 
 import connectToDb from './db.js';
 
@@ -76,6 +77,7 @@ app.use((req, res, next) => {
 
 app.use('/uploads', express.static('uploads'));
 
+app.use(errorHandler);
 
 server.listen(process.env.PORT, () => {
     console.log(`Server started at http://127.0.0.1:${process.env.PORT}`);

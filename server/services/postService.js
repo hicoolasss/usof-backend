@@ -13,16 +13,14 @@ class postService {
                 content
             });
 
-
             return {
                 message: "Post created successfully",
                 post
             };
         } catch (error) {
-            console.error("Error in createPost:", error);
+            console.error("Error in createPost service:", error);
             throw error; // Переброс ошибки для обработки на более высоком уровне (например, в контроллере)
         }
-
 
     }
 
@@ -55,7 +53,7 @@ class postService {
                 like
             };
         } catch (error) {
-            console.error("Error in likePost:", error);
+            console.error("Error in likePost service:", error);
             throw error; // Переброс ошибки для обработки на более высоком уровне
         }
     }

@@ -14,21 +14,30 @@ const __dirname = dirname(__filename);
 class userService {
 
     async getAllUsers() {
+        
         const users = await User.find();
+        
         return users;
+    
     }
 
     async getUserById(userId) {
+    
         try {
+    
             const user = await User.findById(userId);
+    
             if (!user) {
-                console.log("User not found");
-                return null;
+               throw new Error("User not found");
             }
-            // console.log("User found:", user);
+    
+    
             return user;
+    
         } catch (error) {
+    
             throw new Error("Error getting user by id:");
+    
         }
     }
 

@@ -33,4 +33,6 @@ router.post('/api/posts/:id/like', authenticationMiddleware, postController.like
 router.patch('/api/posts/:id',authenticationMiddleware, postController.updatePost);
 router.delete('/api/posts/:id', authenticationMiddleware, postController.deletePost);
 
+router.get('/api/refresh', authController.refresh);
+
 export default router;

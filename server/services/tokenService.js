@@ -5,7 +5,7 @@ const JWT_ACCESS_SECRET = "pidorpizda"
 const JWT_REFRESH_SECRET = "pidorpizda"
 
 class TokenService {
-    
+
     generateTokens(payload) {
         const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, { expiresIn: '30m' })
         const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: '30d' })
@@ -34,16 +34,15 @@ class TokenService {
     }
 
     async saveToken(userId, refreshToken) {
-        console.log("saving token:", refreshToken);
         const tokenData = await tokenModel.findOne({ user: userId })
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
-            console.log("token found, updating", tokenData);
+
             return tokenData.save();
         }
-        console.log("token not found, creating new one");
+
         const token = await tokenModel.create({ user: userId, refreshToken })
-        console.log("token saved:", token);
+
         return token;
     }
 
@@ -55,10 +54,10 @@ class TokenService {
     async findToken(refreshToken) {
         try {
             const tokenData = await tokenModel.findOne({ refreshToken });
-            console.log("tokenData:", tokenData);
+
             return tokenData;
         } catch (error) {
-            console.error("Error finding token:", error);
+            console.error("Can`t find token:", error);
             throw error;
         }
     }

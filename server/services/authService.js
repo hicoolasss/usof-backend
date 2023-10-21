@@ -109,6 +109,28 @@ class authService {
         await ResetPasswordToken.findByIdAndDelete(resetTokenEntry._id); // Удаляем использованный токен
     }
 
+    async refresh(refreshToken) {
+        if (!refreshToken) {
+            throw new Error("No token provided");
+        }
+        const userData = tokenService.validateRefreshToken(refreshToken);
+        const tokenFromDb = await tokenService.findToken(refreshToken);
+
+        if (!userData || !tokenFromDb) {
+            throw new Error("Invalid token");
+        }
+        const user = await User.findById(userData.id);
+        if (!user) {
+            throw new Error("Пользователь не найден");
+        }
+        const userDto = new UserDto(user);
+        const tokens = tokenService.generateTokens({ ...userDto });
+
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        
+        return { ...tokens, user: userDto }
+    }
+
 }
 
 export default new authService();

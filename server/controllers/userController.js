@@ -1,34 +1,38 @@
 import userService from "../services/userService.js";
 
-
+import buildResponse from "../utils/buildResponse.js";
 
 export default class userController {
 
 
-    static async getUsers(req, res) {
+    static async getUsers(req, res, next) {
+
         try {
             console.log("Get Users");
+
             const users = await userService.getAllUsers();
-            return res.json(users);
+            return res.json(buildResponse(true, users));
+
         } catch (error) {
-            console.error("Error in getUsers:", error);
-            return res.status(500).json({ message: error.message });
+
+            next(error);
+
         }
+
     }
 
-    static async getUserById(req, res) {
+    static async getUserById(req, res, next) {
         try {
             console.log("Get User by ID");
             const userId = req.params.id;
             const user = await userService.getUserById(userId);
-            return res.json(user);
+            return res.json(buildResponse(true, user));
         } catch (error) {
-            console.error("Error in getUserById:", error);
-            return res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    static async createUserForAdmin(req, res) {
+    static async createUserForAdmin(req, res, next) {
         try {
             const { login, password, email, role } = req.body;
 
@@ -36,14 +40,13 @@ export default class userController {
 
             console.log("User created successfully");
 
-            return res.json(userData);
+           return res.json(buildResponse(true, { userData, message: "User created successfully" }));
         } catch (error) {
-            console.error("Error in createUserForAdmin:", error);
-            return res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    static async uploadUserAvatar(req, res) {
+    static async uploadUserAvatar(req, res, next) {
         try {
 
             const { userId } = req.body;
@@ -51,14 +54,13 @@ export default class userController {
 
             const userData = await userService.uploadUserAvatar(userId, avatarPath);
 
-            return res.json({ message: "Avatar successfully uploaded" });
+            return res.json(buildResponse(true, { userData, message: "User avatar successfully uploaded" }));
         } catch (error) {
-            console.error("Error in uploadUserAvatar:", error);
-            return res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    static async updateUser(req, res) {
+    static async updateUser(req, res, next) {
         try {
             const { userId } = req.params; // Получаем ID пользователя из параметра маршрута
             const userData = req.body; // Получаем данные пользователя из тела запроса
@@ -66,34 +68,26 @@ export default class userController {
             // Вызываем соответствующий метод из сервиса (этот метод вам также, возможно, потребуется создать)
             const updatedUser = await userService.updateUser(userId, userData);
 
-            if (!updatedUser) {
-                return res.status(404).json({ message: "User not found" });
-            }
-
-            return res.json({ message: "User successfully updated", user: updatedUser });
+        
+           return res.json(buildResponse(true, {updatedUser, message: "User successfully updated"}));
         } catch (error) {
-            console.error("Error in updateUser:", error);
-            return res.status(500).json({ message: error.message });
+            next(error);
         }
-       
+
     }
 
-    static deleteUser(req, res) {
+    static deleteUser(req, res, next) {
         try {
             const { userId } = req.params; // Получаем ID пользователя из параметра маршрута
 
             // Вызываем соответствующий метод из сервиса (этот метод вам также, возможно, потребуется создать)
             const user = userService.deleteUser(userId);
 
-            if (!user) {
-                return res.status(404).json({ message: "User not found" });
-            }
 
-            return res.json({ message: "User successfully deleted" });
+            return res.json(buildResponse(true, { message: "User successfully deleted"}));
         } catch (error) {
-            console.error("Error in deleteUser:", error);
-            return res.status(500).json({ message: error.message });
+            next(error);
         }
-    
+
     }
 }
