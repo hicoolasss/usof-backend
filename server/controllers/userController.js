@@ -14,6 +14,7 @@ export default class userController {
             console.error("Error in getUsers:", error);
             res.status(500).json({ message: error.message });
         }
+        return res.json({ message: "Get Users" });
     }
 
     static async getUserById(req, res) {
@@ -26,6 +27,7 @@ export default class userController {
             console.error("Error in getUserById:", error);
             res.status(500).json({ message: error.message });
         }
+        return res.json({ message: "Get User by ID" });
     }
 
     static async createUserForAdmin(req, res) {
@@ -41,11 +43,11 @@ export default class userController {
             console.error("Error in createUserForAdmin:", error);
             res.status(500).json({ message: error.message });
         }
+        return res.json({ message: "Create User" });
     }
 
     static async uploadUserAvatar(req, res) {
         try {
-            console.log("Upload user avatar");
 
             const { userId } = req.body;
             const avatarPath = req.files.avatar;
@@ -57,6 +59,7 @@ export default class userController {
             console.error("Error in uploadUserAvatar:", error);
             res.status(500).json({ message: error.message });
         }
+        return res.json({ message: "Upload user avatar" });
     }
 
     static async updateUser(req, res) {
@@ -76,6 +79,7 @@ export default class userController {
             console.error("Error in updateUser:", error);
             res.status(500).json({ message: error.message });
         }
+        return res.json({ message: "Update User" });
     }
 
     static deleteUser(req, res) {
@@ -94,5 +98,6 @@ export default class userController {
             console.error("Error in deleteUser:", error);
             res.status(500).json({ message: error.message });
         }
+        return res.json({ message: "Delete User" });
     }
 }
