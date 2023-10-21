@@ -88,14 +88,29 @@ class postService {
         }
     }
 
+    async deletePost(postId, userId, userRole) {
+        try {
+            const post = await Post.findById(postId);
 
+            if (!post) {
+                throw new Error("Post not found");
+            }
 
+            // Проверяем, является ли пользователь администратором или автором поста
+            const isAuthorized = userRole === 'admin' || post.author_id.equals(userId);
 
+            if (!isAuthorized) {
+                throw new Error("Not authorized to delete this post");
+            }
 
+            await Post.deleteOne({ _id: postId });
 
-
-    async deletePost(req, res) {
-
+            return { message: "Post deleted successfully" };
+        } catch (error) {
+            // Здесь вы можете выбросить ошибку выше, чтобы ваш контроллер мог ее перехватить и обработать соответствующим образом
+            console.error("Error in deletePost service:", error);
+            throw error;
+        }
     }
 
     async deleteLike(req, res) {

@@ -31,5 +31,6 @@ router.delete('/api/users/:userId', userController.deleteUser);
 router.post('/api/posts/', postController.createPost);
 router.post('/api/posts/:id/like', authenticationMiddleware, postController.likePost);
 router.patch('/api/posts/:id',authenticationMiddleware, postController.updatePost);
+router.delete('/api/posts/:id', authenticationMiddleware, postController.deletePost);
 
 export default router;

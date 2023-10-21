@@ -57,7 +57,25 @@ export default class postController {
     }
 
     static async deletePost(req, res) {
+        try {
+            const post_id = req.params.id; // извлечение post_id из параметров запроса
+            const userId = req.user.id; // Это должно быть частью данных пользователя, установленных в middleware аутентификации
+            const userRole = req.user.role; // Аналогично, это должно быть в вашем объекте req.user
 
+            const response = await postService.deletePost(post_id, userId, userRole);
+
+            return res.json(response);
+        } catch (error) {
+            console.error("Error in controller:", error);
+            // Вы можете отправить разные статусы ошибок в зависимости от типа ошибки
+            if (error.message === "Post not found") {
+                return res.status(404).json({ message: error.message });
+            } else if (error.message === "Not authorized to delete this post") {
+                return res.status(403).json({ message: error.message });
+            } else {
+                return res.status(500).json({ message: "Internal server error" });
+            }
+        }
     }
 
     static async deleteLike(req, res) {

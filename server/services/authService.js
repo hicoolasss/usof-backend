@@ -87,13 +87,21 @@ class authService {
         if (!resetTokenEntry) {
             throw new Error("Invalid or expired password reset token!");
         }
-
+        
         const user = await User.findById(resetTokenEntry.userId);
         if (!user) {
             throw new Error("User not found!");
         }
 
-        const saltRounds = 10; // you can adjust this number based on your security requirement
+        const saltRounds = 10;
+       
+        // console.log('newPassword:', newPassword);
+        // console.log('saltRounds:', saltRounds);
+
+        if (!newPassword || !Number.isInteger(saltRounds)) {
+            throw new Error("Invalid arguments provided for hashing");
+        }
+
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
         user.password_hash = hashedPassword; // Здесь вы должны также хешировать пароль!
         await user.save();
