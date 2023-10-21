@@ -23,7 +23,7 @@ class MailService {
 
         const resetToken = new ResetPasswordToken({
             userId: user._id,
-            token: token
+            token
         });
         await resetToken.save();
         await this.transporter.sendMail({
@@ -47,7 +47,7 @@ class MailService {
 
         const verifyToken = new verifyEmailToken({
             userId: user._id,
-            token: token
+            token
         });
         await verifyToken.save();
         await this.transporter.sendMail({

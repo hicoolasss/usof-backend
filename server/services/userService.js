@@ -34,8 +34,8 @@ class userService {
 
     async createUser(login, password, email, role) {
         try {
-            const check_login = await User.findOne({ login: login });
-            const check_email = await User.findOne({ email: email });
+            const check_login = await User.findOne({ login }); // вместо { login: login }
+            const check_email = await User.findOne({ email });
 
             if (check_login) {
                 throw new Error("Login already exists!");

@@ -45,7 +45,7 @@ class postService {
                 entity_id: postId,
                 entity_type: 'post',
                 author_id: authorId,
-                type: type
+                type
             });
 
             await like.save();

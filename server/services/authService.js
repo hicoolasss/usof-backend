@@ -3,13 +3,13 @@ import tokenService from './tokenService.js';
 import mailService from './mailService.js';
 import UserDto from '../dto/userDto.js';
 import bcrypt from 'bcrypt';
-import  ResetPasswordToken from '../models/resetPasswordToken.js';
+import ResetPasswordToken from '../models/resetPasswordToken.js';
 
 class authService {
     async registration(login, password, email) {
         try {
-            const check_login = await User.findOne({ login: login });
-            const check_email = await User.findOne({ email: email });
+            const check_login = await User.findOne({ login }); // вместо { login: login }
+            const check_email = await User.findOne({ email });
 
             if (check_login) {
                 throw new Error("Login already exists!");
@@ -20,7 +20,7 @@ class authService {
             }
             console.log("Login:", login)
             console.log("Password to hash:", password);
-            
+
             const saltRounds = 10; // you can adjust this number based on your security requirement
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             const user = await User.create({
@@ -48,7 +48,7 @@ class authService {
     async login(login, password) {
         const user = await User.findOne({
             $or: [
-                { login: login },
+                { login },
                 { email: login }
             ]
         });
@@ -75,7 +75,7 @@ class authService {
         };
 
     }
-    
+
     async logout(refreshToken) {
         const token = await tokenService.removeToken(refreshToken);
         return token;
@@ -85,14 +85,14 @@ class authService {
         const resetTokenEntry = await ResetPasswordToken.findOne({ token });
 
         if (!resetTokenEntry) {
-           throw new Error("Invalid or expired password reset token!");
+            throw new Error("Invalid or expired password reset token!");
         }
 
         const user = await User.findById(resetTokenEntry.userId);
         if (!user) {
             throw new Error("User not found!");
         }
-        
+
         const saltRounds = 10; // you can adjust this number based on your security requirement
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
         user.password_hash = hashedPassword; // Здесь вы должны также хешировать пароль!
