@@ -13,12 +13,12 @@ const __dirname = dirname(__filename);
 
 class userService {
 
-    async getAllUsers() {
+    static async getAllUsers() {
         const users = await User.find();
         return users;
     }
 
-    async getUserById(userId) {
+    static async getUserById(userId) {
         try {
             const user = await User.findById(userId);
             if (!user) {
@@ -32,7 +32,7 @@ class userService {
         }
     }
 
-    async createUser(login, password, email, role) {
+    static async createUser(login, password, email, role) {
         try {
             const check_login = await User.findOne({ login }); // вместо { login: login }
             const check_email = await User.findOne({ email });
@@ -74,14 +74,14 @@ class userService {
         }
     }
 
-    async uploadUserAvatar(userId, file) {
+    static async uploadUserAvatar(userId, file) {
         try {
             const user = await this.getUserById(userId);
             if (!user) {
                 throw new Error("User not found");
             }
-            let avatar = file;
-            let uploadPath = path.join(__dirname, "..", "uploads", avatar.name); // Adjust the path if needed
+            const avatar = file;
+            const uploadPath = path.join(__dirname, "..", "uploads", avatar.name); // Adjust the path if needed
 
             // Using Promises for better error handling
             await new Promise((resolve, reject) => {
@@ -102,7 +102,7 @@ class userService {
         }
     }
 
-    async updateUser(userId, userData) {
+    static async updateUser(userId, userData) {
         try {
             // Ищем пользователя по ID и обновляем его
             const user = await User.findByIdAndUpdate(userId, userData, { new: true });
@@ -120,7 +120,7 @@ class userService {
     }
 
 
-    async deleteUser(userId) {
+    static async deleteUser(userId) {
         try {
             const user = await this.getUserById(userId);
             if (!user) {

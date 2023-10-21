@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 import ResetPasswordToken from '../models/resetPasswordToken.js';
 
 class authService {
-    async registration(login, password, email) {
+    static async registration(login, password, email) {
         try {
             const check_login = await User.findOne({ login }); // вместо { login: login }
             const check_email = await User.findOne({ email });
@@ -45,7 +45,7 @@ class authService {
         }
     }
 
-    async login(login, password) {
+    static async login(login, password) {
         const user = await User.findOne({
             $or: [
                 { login },
@@ -76,12 +76,12 @@ class authService {
 
     }
 
-    async logout(refreshToken) {
+    static async logout(refreshToken) {
         const token = await tokenService.removeToken(refreshToken);
         return token;
     }
 
-    async changePassword(token, newPassword) {
+    static async changePassword(token, newPassword) {
         const resetTokenEntry = await ResetPasswordToken.findOne({ token });
 
         if (!resetTokenEntry) {
