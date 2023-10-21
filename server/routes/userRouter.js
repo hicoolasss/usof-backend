@@ -8,8 +8,6 @@ import authenticationMiddleware from "../middlewares/userAuth.js";
 const router = express.Router();
 
 
-router.get('/', authController.main);
-
 router.get('/api/auth/password-reset/:token', authController.showResetPasswordForm);
 router.post('/api/auth/password-reset/:token', authController.changePassword);
 router.post('/api/auth/password-reset/', authController.resetPassword);
@@ -32,5 +30,6 @@ router.delete('/api/users/:userId', userController.deleteUser);
 
 router.post('/api/posts/', postController.createPost);
 router.post('/api/posts/:id/like', authenticationMiddleware, postController.likePost);
+router.patch('/api/posts/:id',authenticationMiddleware, postController.updatePost);
 
 export default router;

@@ -10,10 +10,6 @@ import verifyEmailToken from "../models/verifyEmailToken.js";
 
 export default class authController {
 
-    static main(req, res) {
-        res.sendFile(path.resolve('public', 'index.html'));
-    }
-
     static async createUser(req, res) {
         try {
             const { login, password, email } = req.body;
@@ -47,7 +43,7 @@ export default class authController {
 
             return res.json(userData);
         } catch (error) {
-            console.error("Error creating user:", error);
+            console.error("Error loggining user:", error);
 
             if (error.message === "User not found!") {
                 return res.status(500).json({ error: "User not found!" });

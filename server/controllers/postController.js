@@ -23,8 +23,8 @@ export default class postController {
             const authorId = req.user.id;  // Предполагается, что у вас есть middleware для аутентификации
             const { type } = req.body; // 'like' или 'dislike'
 
-            const likeData =  await postService.likePost(postId, authorId, type);
-            
+            const likeData = await postService.likePost(postId, authorId, type);
+
 
             return res.json(likeData);
 
@@ -35,7 +35,24 @@ export default class postController {
     }
 
     static async updatePost(req, res) {
+        try {
+            const postId = req.params.id;
+            const userId = req.user.id;
+            // Ожидание завершения асинхронной операции и передача необходимых данных в тело запроса
 
+            const updated_post = await postService.updatePost(postId, userId, req.body);
+
+            res.json(updated_post);
+        } catch (error) {
+            console.error(error);
+            if (error.message === 'Post not found') {
+                return res.status(404).send({ message: 'Пост не найден' });
+            } else if (error.message === 'You cannot update posts of other users') {
+                return res.status(403).send({ message: 'Вы не можете обновлять посты других пользователей' });
+            }
+            // Ответ уже был отправлен в одном из условий выше, если ни одно из условий не было выполнено, то отправляем 500 ошибку.
+            return res.status(500).send({ message: 'Произошла ошибка при обновлении поста' });
+        }
     }
 
     static async deletePost(req, res) {

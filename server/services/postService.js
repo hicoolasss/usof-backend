@@ -25,7 +25,7 @@ class postService {
             }
         } catch (error) {
             console.error("Error in createPost:", error);
-            res.status(500).json({ message: error.message });
+            throw error;
         }
     }
 
@@ -33,13 +33,13 @@ class postService {
         try {
             const post = await Post.findById(postId);
             console.log(postId, authorId, type);
-            
+
             if (!post) {
                 throw new Error("Post not found");
             }
-            
+
             if (post) {
-                
+
                 const like = new Like({
                     entity_id: postId,
                     entity_type: 'post',
@@ -57,13 +57,42 @@ class postService {
 
         } catch (error) {
             console.error("Error in likePost:", error);
-            res.status(500).json({ message: error.message });
+            throw error;
         }
     }
 
-    async updatePost(req, res) {
-
+    async updatePost(postId, userId, postData) {
+        try {
+            const post = await Post.findById(postId);
+    
+            if (!post) {
+                throw new Error("Post not found");
+            }
+    
+            // Используйте 'author_id' вместо 'author'
+            if (post.author_id.toString() !== userId) {
+                throw new Error("You cannot update posts of other users");
+            }
+    
+            // Обновление поста данными из postData. Если какое-то поле не предоставлено, оставляем старое значение
+            post.title = postData.title || post.title;
+            post.content = postData.content || post.content; // Если 'body' представляет 'content' в вашей модели
+            // post.category = postData.category || post.category; // Обновите, если ваша модель содержит 'category'
+    
+            await post.save();
+    
+            return post;
+        } catch (error) {
+            console.error(error);
+            throw error; // Переброс ошибки на уровень выше, чтобы обработать её в контроллере
+        }
     }
+
+
+
+
+
+
 
     async deletePost(req, res) {
 

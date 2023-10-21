@@ -23,12 +23,12 @@ const authenticationMiddleware = async (req, res, next) => {
         const decoded = jwt.verify(token, 'pidorpizda');
         
         // // Проверяем наличие refreshToken для этого пользователя в базе данных
-        const refreshToken = await tokenService.findToken(token);
-        console.log("refreshToken:", refreshToken);
+        // const refreshToken = await tokenService.findToken(token);
+        // console.log("refreshToken:", refreshToken);
         
-        if (!refreshToken) {
-            return res.status(401).json({ error: "Token is no longer valid" });
-        }
+        // if (!refreshToken) {
+        //     return res.status(401).json({ error: "Token is no longer valid" });
+        // }
 
         // Если все хорошо, добавляем информацию о пользователе в req.user
         req.user = decoded;
