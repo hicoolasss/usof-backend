@@ -84,13 +84,11 @@ export default class authController {
     static async resetPassword(req, res) {
         try {
             const { email } = req.body;
-            try {
-                const token = uuidv4();
-                await mailService.sendResetPasswordMail(email, token, `${process.env.API_URL}/api/auth/password-reset/${token}`);
-                return res.json({ message: "Password reset link sent to email" });
-            } catch (error) {
-                throw error;
-            }
+
+            const token = uuidv4();
+            await mailService.sendResetPasswordMail(email, token, `${process.env.API_URL}/api/auth/password-reset/${token}`);
+            return res.json({ message: "Password reset link sent to email" });
+
         } catch (error) {
             console.error('Error while password resetting link sending', error);
             return res.status(500).json({ message: error.message });

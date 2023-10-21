@@ -40,6 +40,7 @@ class authService {
                 user: userDto
             };
         } catch (error) {
+            console.error("Error creating user in service:", error);
             throw error;
         }
     }
