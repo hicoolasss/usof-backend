@@ -1,13 +1,12 @@
 import User from '../models/User.js';
-import tokenService from './tokenService.js';
-import mailService from './mailService.js';
+
 import UserDto from '../dto/userDto.js';
 import bcrypt from 'bcrypt';
-import fileUpload from 'express-fileupload';
-import path from "path";
+
+
 
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
