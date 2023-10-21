@@ -13,12 +13,12 @@ const __dirname = dirname(__filename);
 
 class userService {
 
-    static async getAllUsers() {
+    async getAllUsers() {
         const users = await User.find();
         return users;
     }
 
-    static async getUserById(userId) {
+    async getUserById(userId) {
         try {
             const user = await User.findById(userId);
             if (!user) {
@@ -32,7 +32,7 @@ class userService {
         }
     }
 
-    static async createUser(login, password, email, role) {
+    async createUser(login, password, email, role) {
         try {
             const check_login = await User.findOne({ login }); // вместо { login: login }
             const check_email = await User.findOne({ email });
@@ -74,7 +74,7 @@ class userService {
         }
     }
 
-    static async uploadUserAvatar(userId, file) {
+    async uploadUserAvatar(userId, file) {
         try {
             const user = await this.getUserById(userId);
             if (!user) {
@@ -102,7 +102,7 @@ class userService {
         }
     }
 
-    static async updateUser(userId, userData) {
+    async updateUser(userId, userData) {
         try {
             // Ищем пользователя по ID и обновляем его
             const user = await User.findByIdAndUpdate(userId, userData, { new: true });
@@ -120,7 +120,7 @@ class userService {
     }
 
 
-    static async deleteUser(userId) {
+    async deleteUser(userId) {
         try {
             const user = await this.getUserById(userId);
             if (!user) {

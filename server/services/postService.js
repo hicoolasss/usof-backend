@@ -3,7 +3,7 @@ import Like from "../models/Like.js";
 
 class postService {
 
-    static async createPost(author_id, title, publish_date, status, content) {
+    async createPost(author_id, title, publish_date, status, content) {
         try {
             const post = await Post.create({
                 author_id,
@@ -26,7 +26,7 @@ class postService {
 
     }
 
-    static async likePost(postId, authorId, type) {
+    async likePost(postId, authorId, type) {
         try {
             const post = await Post.findById(postId);
             console.log(postId, authorId, type);
@@ -61,7 +61,7 @@ class postService {
     }
 
 
-    static async updatePost(postId, userId, postData) {
+    async updatePost(postId, userId, postData) {
         try {
             const post = await Post.findById(postId);
 
@@ -94,35 +94,35 @@ class postService {
 
 
 
-    static async deletePost(req, res) {
+    async deletePost(req, res) {
 
     }
 
-    static async deleteLike(req, res) {
+    async deleteLike(req, res) {
 
     }
 
-    static async getAllPosts(req, res) {
+    async getAllPosts(req, res) {
 
     }
 
-    static async createComment(req, res) {
+    async createComment(req, res) {
 
     }
 
-    static async getPostById(req, res) {
+    async getPostById(req, res) {
 
     }
 
-    static async getAllComments(req, res) {
+    async getAllComments(req, res) {
 
     }
 
-    static async getAllCategories(req, res) {
+    async getAllCategories(req, res) {
 
     }
 
-    static async getAllLikes(req, res) {
+    async getAllLikes(req, res) {
 
     }
 }
