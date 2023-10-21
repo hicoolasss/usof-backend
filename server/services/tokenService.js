@@ -6,7 +6,7 @@ const JWT_REFRESH_SECRET = "pidorpizda"
 
 class TokenService {
     
-    static generateTokens(payload) {
+    staticgenerateTokens(payload) {
         const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, { expiresIn: '30m' })
         const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: '30d' })
         return {
@@ -15,7 +15,7 @@ class TokenService {
         }
     }
 
-    static validateAccessToken(token) {
+    validateAccessToken(token) {
         try {
             const userData = jwt.verify(token, JWT_ACCESS_SECRET);
             return userData;
@@ -24,7 +24,7 @@ class TokenService {
         }
     }
 
-    static validateRefreshToken(token) {
+    validateRefreshToken(token) {
         try {
             const userData = jwt.verify(token, JWT_REFRESH_SECRET);
             return userData;
@@ -33,7 +33,7 @@ class TokenService {
         }
     }
 
-    static async saveToken(userId, refreshToken) {
+    async saveToken(userId, refreshToken) {
         console.log("saving token:", refreshToken);
         const tokenData = await tokenModel.findOne({ user: userId })
         if (tokenData) {
@@ -47,12 +47,12 @@ class TokenService {
         return token;
     }
 
-    static async removeToken(refreshToken) {
+    async removeToken(refreshToken) {
         const tokenData = await tokenModel.deleteOne({ refreshToken })
         return tokenData;
     }
 
-    static async findToken(refreshToken) {
+    async findToken(refreshToken) {
         try {
             const tokenData = await tokenModel.findOne({ refreshToken });
             console.log("tokenData:", tokenData);
