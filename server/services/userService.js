@@ -15,7 +15,7 @@ class userService {
 
     async getAllUsers() {
         
-        const users = await User.find();
+        const users = await User.find().select('login email profile_picture_path rating role -_id');
         
         return users;
     
@@ -25,7 +25,7 @@ class userService {
     
         try {
     
-            const user = await User.findById(userId);
+            const user = await User.findById(userId).select('login email profile_picture_path rating role -_id');
     
             if (!user) {
                throw new Error("User not found");

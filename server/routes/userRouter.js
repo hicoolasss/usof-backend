@@ -28,10 +28,16 @@ router.patch('/api/users/avatar',  userController.uploadUserAvatar);
 router.patch('/api/users/:userId', userController.updateUser);
 router.delete('/api/users/:userId', userController.deleteUser);
 
-router.post('/api/posts/', postController.createPost);
+router.post('/api/posts/', authenticationMiddleware, postController.createPost);
 router.post('/api/posts/:id/like', authenticationMiddleware, postController.likePost);
 router.patch('/api/posts/:id',authenticationMiddleware, postController.updatePost);
 router.delete('/api/posts/:id', authenticationMiddleware, postController.deletePost);
+router.delete('/api/posts/:id/like', authenticationMiddleware, postController.deleteLike);
+router.get('/api/posts/', postController.getPosts);
+router.post('/api/posts/:id/comments', authenticationMiddleware, postController.createComment);
+router.get('/api/posts/:id/', postController.getPostById);
+router.get('/api/posts/:id/comments', postController.getCommentsByPostId);
+router.get('/api/posts/:id/categories', postController.getAssociatedCategories);
 
 router.get('/api/refresh', authController.refresh);
 

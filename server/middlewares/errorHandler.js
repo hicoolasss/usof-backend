@@ -18,6 +18,8 @@ function handleError(error, req, res, next) {
         case 'You have already reacted to this post':
             statusCode = 403;
             break;
+        
+    
         //auth
         case 'Login already exists!':
             statusCode = 409;

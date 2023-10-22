@@ -9,6 +9,8 @@ import User from './models/User.js';
 import Token from './models/Token.js';
 import Post from './models/Post.js';
 import Like from './models/Like.js';
+import Comment from './models/Comment.js';
+
 
 import AdminJS from 'adminjs'
 import AdminJSExpress from '@adminjs/express'
@@ -19,6 +21,7 @@ import errorHandler from './middlewares/errorHandler.js';
 import connectToDb from './db.js';
 
 import router from './routes/userRouter.js';
+import Category from './models/Category.js';
 
 const app = express();
 const server = createServer(app);
@@ -61,6 +64,8 @@ const admin = new AdminJS({
         // ...ваши другие ресурсы
         Post, // если вы хотите добавить категории навигации для других ресурсов, следует повторить шаги выше
         Like,
+        Comment,
+        Category,
     ],
     
 

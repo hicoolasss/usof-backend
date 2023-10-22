@@ -74,6 +74,7 @@ export default class userController {
             next(error);
         }
 
+
     }
 
     static deleteUser(req, res, next) {

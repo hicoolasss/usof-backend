@@ -4,6 +4,7 @@ import Like from "../models/Like.js";
 class postService {
 
     async createPost(author_id, title, publish_date, status, content) {
+        
         try {
             const post = await Post.create({
                 author_id,
@@ -24,33 +25,26 @@ class postService {
 
     }
 
-    async likePost(postId, authorId, type) {
+    async likePost(postId, userId) {
         try {
             const post = await Post.findById(postId);
-            console.log(postId, authorId, type);
 
             if (!post) {
                 throw new Error("Post not found");
             }
 
-            // Проверка на существование предыдущего лайка/дизлайка от этого пользователя
-            const existingLike = await Like.findOne({ entity_id: postId, author_id: authorId });
-            if (existingLike) {
-                throw new Error("You have already reacted to this post");
+            // Проверяем, поставил ли пользователь уже лайк этому посту
+            if (post.likes.includes(userId)) {
+                throw new Error("You have already liked this post");
             }
 
-            const like = new Like({
-                entity_id: postId,
-                entity_type: 'post',
-                author_id: authorId,
-                type
-            });
-
-            await like.save();
+            // Добавляем лайк в пост
+            post.likes.push(userId);
+            await post.save();
 
             return {
                 message: "Like added successfully",
-                like
+                totalLikes: post.likes.length // Возвращаем общее количество лайков поста
             };
         } catch (error) {
             console.error("Error in likePost service:", error);
@@ -111,32 +105,165 @@ class postService {
         }
     }
 
-    async deleteLike(req, res) {
+    async deleteLike(postId, userId) {
+
+        try {
+            console.log(postId, userId);
+
+            // Найти пост по ID
+            const post = await Post.findById(postId);
+
+            if (!post) {
+                throw new Error('Post not found');
+            }
+
+            // Проверить, есть ли у поста лайк от этого пользователя
+            if (!post.likes.includes(userId)) {
+                throw new Error('You have not liked this post');
+            }
+
+            // Удалить ID пользователя из массива лайков
+            post.likes.pull(userId);
+
+            await post.save();
+
+            return { post, message: 'Like deleted successfully' }; // или можете вернуть любую другую полезную информацию
+
+        } catch (error) {
+            console.error("Error in deleteLike service:", error);
+            throw error;
+
+        }
 
     }
 
-    async getAllPosts(req, res) {
+    async getPosts() {
+        
+        try {
+
+            const posts = await Post.find();
+            return posts;
+
+        } catch (error) {
+
+            console.error("Error in getAllPosts service:", error);
+            throw error;
+
+        }
+    }
+
+    async createComment(postId, authorId, content) {
+        
+        try {
+            // Найти пост, к которому нужно добавить комментарий
+            const post = await Post.findById(postId);
+            if (!post) throw new Error('Post not found');
+
+            // Создать объект комментария
+            const newComment = {
+                author_id: authorId,
+                content,
+                // publish_date и status автоматически устанавливаются согласно вашей схеме
+            };
+
+            // Добавить новый комментарий к массиву комментариев поста
+            post.comments.push(newComment);
+
+            // Сохранить пост с новым комментарием
+            await post.save();
+
+            return {
+                message: 'Comment created successfully',
+                comment: newComment,
+            };
+        
+        } catch (error) {
+        
+            console.error('Error in createComment service:', error);
+            throw error; // Перебрасывание ошибки на уровень выше для обработки в контроллере
+        
+        }
+    
+    }
+
+    async getPostById(postId) {
+        
+        try {
+            // Поиск поста по ID
+            const post = await Post.findById(postId).populate('author_id', 'login email profile_picture_path rating role -_id') // только перечисленные поля для автора, без _id
+            .populate({
+                path: 'comments.author_id',
+                select: 'login email profile_picture_path rating role -_id' // только перечисленные поля для авторов комментариев, без _id
+            });
+
+            if (!post) {
+                throw new Error('Post not found');
+            }
+
+            return post; // Если пост найден, вернуть его
+    
+        } catch (error) {
+        
+            console.error('Error in getPostById service:', error);
+            throw error; // Перебрасывание ошибки на уровень выше для обработки в контроллере
+        
+        }
+    
+    }
+
+    async getCommentsByPostId(postId) {
+
+        try {
+        
+            const post = await Post.findById(postId).populate('comments.author_id', 'login _id'); // Это только верно, если комментарии хранятся внутри поста в качестве массива вложенных документов.
+            
+            if (!post) {
+                throw new Error('Post not found');
+            }
+            
+            return post.comments;
+        
+        } catch (error) {
+        
+            console.error("Error in getPostComments service:", error);
+            throw error;
+        
+        }
 
     }
 
-    async createComment(req, res) {
-
+    async getAssociatedCategories(postId) {
+        try {
+            // Найти пост по ID и заполнить связанные категории
+            // Обратите внимание, что это работает, если у вас есть поле "categories" в вашем Post модели, которое хранит ссылки на объекты Category
+            const post = await Post.findById(postId).populate('categories');
+    
+            if (!post) {
+                throw new Error('Post not found');
+            }
+    
+            return post.categories;
+        } catch (error) {
+            console.error("Error in getAssociatedCategories service:", error);
+            throw error;
+        }
     }
 
-    async getPostById(req, res) {
-
-    }
-
-    async getAllComments(req, res) {
-
-    }
-
-    async getAllCategories(req, res) {
-
-    }
-
-    async getAllLikes(req, res) {
-
+    async getPostLikes(postId) {
+        try {
+            // Найти пост по ID и заполнить связанные лайки
+            // Обратите внимание, что это работает, если у вас есть поле "likes" в вашей модели Post, которое хранит ссылки на объекты Like
+            const post = await Post.findById(postId).populate('likes');
+    
+            if (!post) {
+                throw new Error('Post not found');
+            }
+    
+            return post.likes;
+        } catch (error) {
+            console.error("Error in getPostLikes service:", error);
+            throw error;
+        }
     }
 }
 

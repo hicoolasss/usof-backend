@@ -1,11 +1,6 @@
 import mongoose from 'mongoose';
 
-const commentSchema = new mongoose.Schema({
-    post_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-        required: true
-    },
+export const commentSchema = new mongoose.Schema({ // добавлено 'export'
     author_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

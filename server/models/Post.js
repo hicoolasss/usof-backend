@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { commentSchema } from './Comment.js';
 
 const postSchema = new mongoose.Schema({
     author_id: {
@@ -23,7 +24,15 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // Additional fields for images can be added here
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    comments: [commentSchema],
+    categories: [{ // добавляем ссылки на категории
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    }],
 });
 
 const Post = mongoose.model('Post', postSchema);

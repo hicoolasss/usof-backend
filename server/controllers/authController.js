@@ -48,6 +48,7 @@ export default class authController {
         } catch (error) {
         
             next(error);
+            return;
         
         }
    
@@ -212,7 +213,7 @@ export default class authController {
     
             const { refreshToken } = req.cookies;
     
-            const userData = await userService.refresh(refreshToken);
+            const userData = await authService.refresh(refreshToken);
     
             res.cookie('refreshToken', userData.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
             
