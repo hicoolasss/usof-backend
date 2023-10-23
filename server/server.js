@@ -10,7 +10,7 @@ import Token from './models/Token.js';
 import Post from './models/Post.js';
 import Like from './models/Like.js';
 import Comment from './models/Comment.js';
-
+import cors from "cors";
 
 import AdminJS from 'adminjs'
 import AdminJSExpress from '@adminjs/express'
@@ -31,9 +31,14 @@ const navigation = {
     icon: 'Users',
 }
 
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+}));
+
 app.use(cookieParser());
-app.use(express.json());
 app.use(fileUpload({}));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve('server/public')));
 

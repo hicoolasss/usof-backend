@@ -43,6 +43,9 @@ router.get('/api/posts/:id/comments', postController.getCommentsByPostId);
 router.get('/api/posts/:id/categories', postController.getAssociatedCategories);
 
 
+
+
+
 router.post('/api/categories',  authenticationMiddleware, categoriesController.createCategory);
 router.get('/api/categories', categoriesController.getCategories);
 router.get('/api/categories/:id', categoriesController.getCategoryById);
