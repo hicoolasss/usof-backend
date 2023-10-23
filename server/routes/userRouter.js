@@ -3,6 +3,8 @@ import authController from "../controllers/authController.js";
 import userController from "../controllers/userController.js";
 import postController from "../controllers/postController.js";
 import categoriesController from "../controllers/categoriesController.js";
+import commentsController from "../controllers/commentsController.js";
+
 import authenticationMiddleware from "../middlewares/userAuth.js";
 
 
@@ -49,6 +51,12 @@ router.delete('/api/categories/:id', authenticationMiddleware, categoriesControl
 router.get('/api/categories/:id/posts', categoriesController.getPostsByCategoryId);
 
 
+router.get('/api/comments/:id', commentsController.getCommentById);
+router.post('/api/comments/:id/like', authenticationMiddleware, commentsController.likeComment);
+router.get('/api/comments/:id/likes', commentsController.getLikesByCommentId);
+router.patch('/api/comments/:id', authenticationMiddleware, commentsController.updateCommentById);
+router.delete('/api/comments/:id', authenticationMiddleware, commentsController.deleteCommentById);
+router.delete('/api/comments/:id/like', authenticationMiddleware, commentsController.deleteLikeUnderComment);
 
 
 router.get('/api/refresh', authController.refresh);

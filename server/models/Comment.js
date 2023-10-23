@@ -24,7 +24,11 @@ export const commentSchema = new mongoose.Schema({ // добавлено 'export
         type: String,
         enum: ['active', 'inactive'],
         default: 'active'
-    }
+    },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 });
 
 const Comment = mongoose.model('Comment', commentSchema);

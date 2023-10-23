@@ -68,6 +68,19 @@ function handleError(error, req, res, next) {
         case 'Category not found':
             statusCode = 404;
             break;
+
+        //comments
+        case 'Comment not found':
+            statusCode = 404;
+            break;
+        
+        case 'You are not the author of this comment':
+            statusCode = 403;
+            break;
+        
+        case 'Content is required':
+            statusCode = 400;
+            break;
         
 
 

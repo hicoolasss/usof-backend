@@ -27,6 +27,7 @@ class postService {
     }
 
     async likePost(postId, userId) {
+        
         try {
             const post = await Post.findById(postId);
 
@@ -34,17 +35,24 @@ class postService {
                 throw new Error("Post not found");
             }
 
-            // Проверяем, поставил ли пользователь уже лайк этому посту
-            if (post.likes.includes(userId)) {
-                throw new Error("You have already liked this post");
+            let message;
+
+            const alreadyLiked = post.likes.some(likeId => likeId.equals(userId));
+
+            if (!alreadyLiked) {
+                // Если лайка нет, то добавить его
+                post.likes.push(userId);
+                message = "post liked successfully";
+            } else {
+                // Если лайк есть, то удалить его
+                post.likes = post.likes.filter(likeId => !likeId.equals(userId));
+                message = "post unliked successfully";
             }
 
-            // Добавляем лайк в пост
-            post.likes.push(userId);
             await post.save();
 
             return {
-                message: "Like added successfully",
+                message,
                 totalLikes: post.likes.length // Возвращаем общее количество лайков поста
             };
         } catch (error) {
