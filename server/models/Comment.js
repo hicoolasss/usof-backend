@@ -1,9 +1,15 @@
 import mongoose from 'mongoose';
+import Post from './Post.js';
 
 export const commentSchema = new mongoose.Schema({ // добавлено 'export'
     author_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        required: true
+    }, 
+    post: { // добавляем ссылку на пост
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
         required: true
     },
     content: {

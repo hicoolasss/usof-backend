@@ -2,6 +2,7 @@ import express from "express";
 import authController from "../controllers/authController.js";
 import userController from "../controllers/userController.js";
 import postController from "../controllers/postController.js";
+import categoriesController from "../controllers/categoriesController.js";
 import authenticationMiddleware from "../middlewares/userAuth.js";
 
 
@@ -38,6 +39,17 @@ router.post('/api/posts/:id/comments', authenticationMiddleware, postController.
 router.get('/api/posts/:id/', postController.getPostById);
 router.get('/api/posts/:id/comments', postController.getCommentsByPostId);
 router.get('/api/posts/:id/categories', postController.getAssociatedCategories);
+
+
+router.post('/api/categories',  authenticationMiddleware, categoriesController.createCategory);
+router.get('/api/categories', categoriesController.getCategories);
+router.get('/api/categories/:id', categoriesController.getCategoryById);
+router.patch('/api/categories/:id', authenticationMiddleware, categoriesController.updateCategorybyId);
+router.delete('/api/categories/:id', authenticationMiddleware, categoriesController.deleteCategoryById);
+router.get('/api/categories/:id/posts', categoriesController.getPostsByCategoryId);
+
+
+
 
 router.get('/api/refresh', authController.refresh);
 

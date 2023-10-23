@@ -28,7 +28,10 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    comments: [commentSchema],
+    comments: [{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment' // указываем, что это ссылки на комментарии
+    }],
     categories: [{ // добавляем ссылки на категории
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'

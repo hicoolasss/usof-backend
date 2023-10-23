@@ -16,9 +16,9 @@ export default class authController {
         
         try {
             
-            const { login, password, email } = req.body;
+            const { login, password, email, role } = req.body;
 
-            const userData = await authService.registration(login, password, email);
+            const userData = await authService.registration(login, password, email, role);
             
             res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
             
@@ -74,25 +74,25 @@ export default class authController {
    
     }
 
-    static async refresh(req, res, next) {
+    // static async refresh(req, res, next) {
         
-        try {
+    //     try {
             
-            const { refreshToken } = req.cookies;
+    //         const { refreshToken } = req.cookies;
             
-            const userData = await authService.refresh(refreshToken);
+    //         const userData = await authService.refresh(refreshToken);
         
-            res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+    //         res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
         
-            return res.json(buildResponse(true, userData));
+    //         return res.json(buildResponse(true, userData));
         
-        } catch (error) {
+    //     } catch (error) {
         
-            next(error);
+    //         next(error);
         
-        }
+    //     }
    
-    }
+    // }
 
     static async resetPassword(req, res, next) {
        

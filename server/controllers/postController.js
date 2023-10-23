@@ -7,13 +7,13 @@ export default class postController {
     static async createPost(req, res, next) {
 
         try {
-            const { title, publish_date, status, content } = req.body;
+            const { title, publish_date, status, content, categories } = req.body;
 
             const author_id = req.user.id; // Это должно быть частью данных пользователя, установленных в middleware аутентификации
 
             console.log(author_id);
 
-            const postData = await postService.createPost(author_id, title, publish_date, status, content);
+            const postData = await postService.createPost(author_id, title, publish_date, status, content, categories);
 
             return res.json(buildResponse(true, postData));
 

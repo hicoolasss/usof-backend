@@ -60,7 +60,15 @@ function handleError(error, req, res, next) {
             statusCode = 500;
             break;
         
+        //categories
+        case 'Permission denied: only admins can create categories':
+            statusCode = 403;
+            break;
 
+        case 'Category not found':
+            statusCode = 404;
+            break;
+        
 
 
 

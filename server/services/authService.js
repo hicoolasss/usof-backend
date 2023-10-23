@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 import ResetPasswordToken from '../models/resetPasswordToken.js';
 
 class authService {
-    async registration(login, password, email) {
+    async registration(login, password, email, role) {
         try {
             const check_login = await User.findOne({ login }); // вместо { login: login }
             const check_email = await User.findOne({ email });
@@ -26,7 +26,8 @@ class authService {
             const user = await User.create({
                 login,
                 password_hash: hashedPassword,
-                email
+                email,
+                role
             });
 
             const userDto = new UserDto(user);

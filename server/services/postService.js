@@ -1,9 +1,9 @@
 import Post from "../models/Post.js";
-import Like from "../models/Like.js";
+import Comment from "../models/Comment.js";
 
 class postService {
 
-    async createPost(author_id, title, publish_date, status, content) {
+    async createPost(author_id, title, publish_date, status, content, categories) {
         
         try {
             const post = await Post.create({
@@ -11,7 +11,8 @@ class postService {
                 title,
                 publish_date,
                 status,
-                content
+                content,
+                categories: [categories] // Если вы используете массив категорий, используйте categories: [categories]
             });
 
             return {
@@ -69,7 +70,7 @@ class postService {
             // Обновление поста данными из postData. Если какое-то поле не предоставлено, оставляем старое значение
             post.title = postData.title || post.title;
             post.content = postData.content || post.content; // Если 'body' представляет 'content' в вашей модели
-            // post.category = postData.category || post.category; // Обновите, если ваша модель содержит 'category'
+            post.categories = postData.categories || post.categories; // Обновите, если ваша модель содержит 'category'
 
             await post.save();
 
@@ -160,14 +161,17 @@ class postService {
             if (!post) throw new Error('Post not found');
 
             // Создать объект комментария
-            const newComment = {
+            const newComment = new Comment ({
                 author_id: authorId,
                 content,
+                post: postId,
                 // publish_date и status автоматически устанавливаются согласно вашей схеме
-            };
+            });
 
+            await newComment.save();
+            console.log(post);
             // Добавить новый комментарий к массиву комментариев поста
-            post.comments.push(newComment);
+            post.comments.push(newComment._id);
 
             // Сохранить пост с новым комментарием
             await post.save();
