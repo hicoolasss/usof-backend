@@ -31,6 +31,26 @@ export default class authController {
  
     }
 
+
+    static async createUserByGoogle(req, res, next) {
+            
+            try {
+                
+                const { profile } = req.body;
+    
+                const userData = await authService.registrationByGoogle(profile);
+                
+                res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
+                
+                return res.json(buildResponse(true, userData));
+            
+            } catch (error) {
+                
+                next(error);
+            }
+    
+        }
+
     static async authenticateUser(req, res, next) {
       
         try {

@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
+    google_id: {
+        type: String,
+        unique: true,      // Убедитесь, что Google ID уникален
+        required: false    // Не делайте его обязательным, так как не все пользователи регистрируются через Google
+    },
     login: {
         type: String,
         unique: true,

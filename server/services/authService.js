@@ -46,6 +46,53 @@ class authService {
         }
     }
 
+    async registrationByGoogle(profile) {
+        try {
+            const { id, emails, name } = profile;
+            const email = emails[0].value;
+    
+            // Проверка на существующего пользователя
+            const existingUser = await User.findOne({ google_id: id }) || await User.findOne({ email });
+    
+            if (existingUser) {
+                const userDto = new UserDto(existingUser);
+                const tokens = tokenService.generateTokens({ ...userDto });
+                await tokenService.saveToken(userDto.id, tokens.refreshToken);
+    
+                return {
+                    message: 'User found',
+                    userId: existingUser._id,
+                    tokens,
+                    user: userDto
+                };
+            }
+    
+            const user = await User.create({
+                google_id: id,
+                email,
+                login: email, // вы можете использовать email в качестве логина или создать свою собственную логику
+                full_name: `${name.givenName} ${name.familyName}`,
+                role: 'user'
+            });
+    
+            const userDto = new UserDto(user);
+            const tokens = tokenService.generateTokens({ ...userDto });
+            await tokenService.saveToken(userDto.id, tokens.refreshToken);
+    
+            return {
+                message: 'User created successfully',
+                userId: user._id,
+                tokens,
+                user: userDto
+            };
+    
+        } catch (error) {
+            console.error("Error creating user in service:", error);
+            throw error;
+        }
+    }
+
+
     async login(login, password) {
         const user = await User.findOne({
             $or: [

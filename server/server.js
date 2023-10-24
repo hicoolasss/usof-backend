@@ -23,6 +23,10 @@ import connectToDb from './db.js';
 import router from './routes/userRouter.js';
 import Category from './models/Category.js';
 
+import session from 'express-session';
+import passport from 'passport';
+
+
 const app = express();
 const server = createServer(app);
 
@@ -42,7 +46,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve('server/public')));
 
+app.use(session({
+    secret: 'your-secret-key', // Уникальная строка для подписи cookie
+    resave: false, // Обязательно
+    saveUninitialized: false, // Обязательно
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000 // 24 часа
+    }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(router);
+
 
 connectToDb().catch(console.dir);
 
@@ -72,7 +89,7 @@ const admin = new AdminJS({
         Comment,
         Category,
     ],
-    
+
 
 });
 
