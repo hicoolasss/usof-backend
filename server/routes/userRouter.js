@@ -8,12 +8,9 @@ import commentsController from "../controllers/commentsController.js";
 import authenticationMiddleware from "../middlewares/userAuth.js";
 
 import passport from 'passport';
-import GoogleStrategy from 'passport-google-oauth20';
 
-import authService from "../services/authService.js";
-
-import User from "../models/User.js";
-
+import UserDto from "../dto/userDto.js";
+import buildResponse from "../utils/buildResponse.js";
 
 
 const router = express.Router();
@@ -69,41 +66,27 @@ router.patch('/api/comments/:id', authenticationMiddleware, commentsController.u
 router.delete('/api/comments/:id', authenticationMiddleware, commentsController.deleteCommentById);
 router.delete('/api/comments/:id/like', authenticationMiddleware, commentsController.deleteLikeUnderComment);
 
-router.get('/api/refresh', authController.refresh);
+// router.get('/api/refresh', authController.refresh);
 
-passport.use(new GoogleStrategy.Strategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `${process.env.BASE_URL}/auth/google/callback` // используйте BASE_URL вместо PORT
-}, async (accessToken, refreshToken, profile, cb) => {
+
+router.get('/api/auth/callback/google', passport.authenticate('google', {
+    // successRedirect: `${process.env.CLIENT_URL}`,
+    scope: ['profile', 'email'],
+    session: false
+}),
+async (req, res, next) => {
     try {
-        const userDto = await authService.registrationByGoogle(profile);
-        cb(null, userDto.user);
+        const { userDto, tokens } = req.user;
+        console.log(tokens);
+        res.cookie('refreshToken', tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
+        res.json(buildResponse(true, {userDto, tokens}));
     } catch (error) {
-        cb(error, null);
-    }
-}));
-
-passport.serializeUser((user, done) => {
-    done(null, user.id); // здесь мы сохраняем id пользователя в сессии
-});
-
-passport.deserializeUser(async (id, done) => {
-    try {
-        const user = await User.findById(id); // предполагаем, что у вас есть модель User и она уже импортирована
-        done(null, user);
-    } catch (error) {
-        done(error, null);
+        // Если в асинхронном коде возникает ошибка, передайте ее далее с помощью `next()`, чтобы обработать ее в вашем обработчике ошибок
+        next(error);
     }
 });
 
-router.get('/auth/google', passport.authenticate('google', {
-    scope: ['profile', 'email']
-}));
 
-router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-    res.redirect('/some-success-page');
-});
 
 
 export default router;

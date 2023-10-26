@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
     },
     password_hash: {
         type: String,
-        required: true
+        required: true,
+        default: "GoogleAuth"
     },
     full_name: {
         type: String,

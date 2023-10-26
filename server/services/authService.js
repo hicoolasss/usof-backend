@@ -34,6 +34,8 @@ class authService {
             const tokens = tokenService.generateTokens({ ...userDto });
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
+            console.log("refresh token:", tokens.refreshToken);
+
             return {
                 message: 'User created successfully',
                 userId: user._id,
@@ -48,6 +50,7 @@ class authService {
 
     async registrationByGoogle(profile) {
         try {
+            // console.log("profile:", profile);
             const { id, emails, name } = profile;
             const email = emails[0].value;
     
