@@ -50,7 +50,7 @@ class authService {
 
     async registrationByGoogle(profile) {
         try {
-            // console.log("profile:", profile);
+            console.log("creating user by google");
             const { id, emails, name } = profile;
             const email = emails[0].value;
     
@@ -58,16 +58,7 @@ class authService {
             const existingUser = await User.findOne({ google_id: id }) || await User.findOne({ email });
     
             if (existingUser) {
-                const userDto = new UserDto(existingUser);
-                const tokens = tokenService.generateTokens({ ...userDto });
-                await tokenService.saveToken(userDto.id, tokens.refreshToken);
-    
-                return {
-                    message: 'User found',
-                    userId: existingUser._id,
-                    tokens,
-                    user: userDto
-                };
+                throw new Error("Email already exists!");
             }
     
             const user = await User.create({

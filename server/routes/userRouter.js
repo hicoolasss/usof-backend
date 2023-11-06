@@ -28,6 +28,8 @@ router.post('/api/auth/login', authController.authenticateUser);
 router.post('/api/auth/logout', authController.logout);
 router.post('/api/auth/refresh', authController.refresh);
 
+
+
 router.get('/api/users/', userController.getUsers);
 router.get('/api/users/:id', userController.getUserById);
 
@@ -79,7 +81,9 @@ async (req, res, next) => {
         const { userDto, tokens } = req.user;
         console.log(tokens);
         res.cookie('refreshToken', tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
-        res.json(buildResponse(true, {userDto, tokens}));
+        // res.json(buildResponse(true, {userDto, tokens}));
+        res.setHeader('Location', `${process.env.CLIENT_URL}/home`); // Замените на ваш URL клиента
+        res.status(302).end(); // Код 302 для перенаправления
     } catch (error) {
         // Если в асинхронном коде возникает ошибка, передайте ее далее с помощью `next()`, чтобы обработать ее в вашем обработчике ошибок
         next(error);
