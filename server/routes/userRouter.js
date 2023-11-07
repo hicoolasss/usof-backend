@@ -26,7 +26,7 @@ router.post('/api/auth/verify/', authController.sendVerificationMail);
 router.post('/api/auth/register', authController.createUser);
 router.post('/api/auth/login', authController.authenticateUser);
 router.post('/api/auth/logout', authController.logout);
-router.post('/api/auth/refresh', authController.refresh);
+router.get('/api/auth/refresh', authController.refresh);
 
 
 

@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 const userSchema = new mongoose.Schema({
     google_id: {
         type: String,
-        unique: true,      // Убедитесь, что Google ID уникален
-        required: false    // Не делайте его обязательным, так как не все пользователи регистрируются через Google
+        unique: true,
+        default: () => uuidv4(), // Генерируем UUID если google_id не предоставлен
     },
     login: {
         type: String,

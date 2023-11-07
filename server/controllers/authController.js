@@ -13,111 +13,111 @@ import buildResponse from "../utils/buildResponse.js";
 export default class authController {
 
     static async createUser(req, res, next) {
-        
+
         try {
-            
+
             const { login, password, email, role } = req.body;
 
             const userData = await authService.registration(login, password, email, role);
-            
+
             res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
-            
+
             return res.json(buildResponse(true, userData));
-        
+
         } catch (error) {
-            
+
             next(error);
         }
- 
+
     }
 
 
     static async createUserByGoogle(req, res, next) {
-            
-            try {
-                
-                const { profile } = req.body;
-    
-                const userData = await authService.registrationByGoogle(profile);
-                
-                res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
-                
-                return res.json(buildResponse(true, userData));
-            
-            } catch (error) {
-                
-                next(error);
-            }
-    
+
+        try {
+
+            const { profile } = req.body;
+
+            const userData = await authService.registrationByGoogle(profile);
+
+            res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
+
+            return res.json(buildResponse(true, userData));
+
+        } catch (error) {
+
+            next(error);
         }
 
+    }
+
     static async authenticateUser(req, res, next) {
-      
+
         try {
-      
+
             const { login, password } = req.body;
-      
+
             console.log("login:", login);
             console.log("Password:", password);
-      
+
             const userData = await authService.login(login, password);
             res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
 
             return res.json(buildResponse(true, userData));
-      
+
         } catch (error) {
-        
+
             next(error);
             return;
-        
+
         }
-   
+
     }
 
     static async logout(req, res, next) {
-        
+
         try {
-        
+
             const { refreshToken } = req.cookies;
-            
+
             const token = await authService.logout(refreshToken);
-        
+
             res.clearCookie('refreshToken');
-        
+
             return res.json(buildResponse(true, token));
-        
+
         } catch (error) {
-        
+
             next(error);
-        
+
         }
-   
+
     }
 
     // static async refresh(req, res, next) {
-        
+
     //     try {
-            
+
     //         const { refreshToken } = req.cookies;
-            
+
     //         const userData = await authService.refresh(refreshToken);
-        
+
     //         res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
-        
+
     //         return res.json(buildResponse(true, userData));
-        
+
     //     } catch (error) {
-        
+
     //         next(error);
-        
+
     //     }
-   
+
     // }
 
     static async resetPassword(req, res, next) {
-       
+
         try {
-       
+
             const { email } = req.body;
 
             const token = uuidv4();
@@ -126,36 +126,36 @@ export default class authController {
             return res.json(buildResponse(true, { message: "Mail successfully sent" })); // 'sended' должно быть 'sent'
 
         } catch (error) {
-       
+
             next(error);
-       
+
         }
-    
+
     }
 
     static async changePassword(req, res, next) {
-        
+
         try {
             const { token, newPassword } = req.body;
 
             await authService.changePassword(token, newPassword);
 
             return res.json(buildResponse(true, { message: "Password successfully changed" }));
-        
+
         } catch (error) {
-            
+
             next(error);
-        
+
         }
-    
+
     }
 
     static async showResetPasswordForm(req, res, next) {
-        
+
         try {
 
             const token = req.params.token;
-            
+
             const resetTokenEntry = await ResetPasswordToken.findOne({ token });
 
             if (!resetTokenEntry) {
@@ -164,39 +164,39 @@ export default class authController {
 
             // Здесь вы можете отобразить форму для ввода нового пароля или сделать другие действия.
             return res.send('Here you can enter your new password');
-        
+
         } catch (error) {
-        
+
             next(error);
-        
+
         }
 
     }
 
 
     static async sendVerificationMail(req, res, next) {
-        
+
         try {
             const { email } = req.body;
-    
+
             const token = uuidv4();
-    
+
             await mailService.sendVerificationMail(email, token, `${process.env.API_URL}/api/auth/verify/${token}`);
-            
+
             return res.json(buildResponse(true, { message: "Mail successfully sent" }));
-    
+
         } catch (error) {
-    
+
             next(error);
-        
+
         }
-    
+
     }
 
     static async showVereficationForm(req, res, next) {
-        
+
         try {
-            
+
             const token = req.params.token;
 
             const verifyTokenEntry = await verifyEmailToken.findOne({ token });
@@ -206,45 +206,46 @@ export default class authController {
             }
 
             const user = await User.findById(verifyTokenEntry.userId);
-            
+
             if (!user) {
                 return res.status(400).json({ message: "User not found!" });
             }
 
             // Устанавливаем флаг is_email_verified в true
             user.is_email_verified = true;
-           
+
             await user.save();  // Сохраняем изменения
 
             return res.send('Your email successfully verified');
 
-        
+
         } catch (error) {
-        
+
             next(error);
-        
+
         }
 
     }
 
     static async refresh(req, res, next) {
-       
+
         try {
-    
+
             const { refreshToken } = req.cookies;
-    
+
             const userData = await authService.refresh(refreshToken);
-    
+
+
             res.cookie('refreshToken', userData.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
-            
+
             return res.json(buildResponse(true, userData));
-       
+
         } catch (error) {
-       
+
             next(error);
-       
+
         }
-    
+
     }
 
 

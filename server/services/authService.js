@@ -158,6 +158,7 @@ class authService {
         const userData = tokenService.validateRefreshToken(refreshToken);
         const tokenFromDb = await tokenService.findToken(refreshToken);
 
+
         if (!userData || !tokenFromDb) {
             throw new Error("Invalid token");
         }
