@@ -71,24 +71,24 @@ router.delete('/api/comments/:id/like', authenticationMiddleware, commentsContro
 // router.get('/api/refresh', authController.refresh);
 
 
-router.get('/api/auth/callback/google', passport.authenticate('google', {
-    // successRedirect: `${process.env.CLIENT_URL}`,
-    scope: ['profile', 'email'],
-    session: false
-}),
-async (req, res, next) => {
-    try {
-        const { userDto, tokens } = req.user;
-        console.log(tokens);
-        res.cookie('refreshToken', tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
-        // res.json(buildResponse(true, {userDto, tokens}));
-        res.setHeader('Location', `${process.env.CLIENT_URL}/home`); // Замените на ваш URL клиента
-        res.status(302).end(); // Код 302 для перенаправления
-    } catch (error) {
-        // Если в асинхронном коде возникает ошибка, передайте ее далее с помощью `next()`, чтобы обработать ее в вашем обработчике ошибок
-        next(error);
-    }
-});
+// router.get('/api/auth/callback/google', passport.authenticate('google', {
+//     // successRedirect: `${process.env.CLIENT_URL}`,
+//     scope: ['profile', 'email'],
+//     session: false
+// }),
+// async (req, res, next) => {
+//     try {
+//         const { userDto, tokens } = req.user;
+//         console.log(tokens);
+//         res.cookie('refreshToken', tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
+//         // res.json(buildResponse(true, {userDto, tokens}));
+//         res.setHeader('Location', `${process.env.CLIENT_URL}/home`); // Замените на ваш URL клиента
+//         res.status(302).end(); // Код 302 для перенаправления
+//     } catch (error) {
+//         // Если в асинхронном коде возникает ошибка, передайте ее далее с помощью `next()`, чтобы обработать ее в вашем обработчике ошибок
+//         next(error);
+//     }
+// });
 
 
 

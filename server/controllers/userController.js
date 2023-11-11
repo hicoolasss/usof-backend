@@ -40,7 +40,7 @@ export default class userController {
 
             console.log("User created successfully");
 
-           return res.json(buildResponse(true, { userData, message: "User created successfully" }));
+            return res.json(buildResponse(true, { userData, message: "User created successfully" }));
         } catch (error) {
             next(error);
         }
@@ -66,10 +66,11 @@ export default class userController {
             const userData = req.body; // Получаем данные пользователя из тела запроса
 
             // Вызываем соответствующий метод из сервиса (этот метод вам также, возможно, потребуется создать)
-            const updatedUser = await userService.updateUser(userId, userData);
+            const user = await userService.updateUser(userId, userData);
 
-        
-           return res.json(buildResponse(true, {updatedUser, message: "User successfully updated"}));
+
+            console.log("User successfully updated:", user);
+            return res.json(buildResponse(true, { user, message: "User successfully updated" }));
         } catch (error) {
             next(error);
         }
@@ -85,7 +86,7 @@ export default class userController {
             const user = userService.deleteUser(userId);
 
 
-            return res.json(buildResponse(true, { message: "User successfully deleted"}));
+            return res.json(buildResponse(true, { message: "User successfully deleted" }));
         } catch (error) {
             next(error);
         }

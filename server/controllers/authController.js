@@ -32,24 +32,24 @@ export default class authController {
     }
 
 
-    static async createUserByGoogle(req, res, next) {
+    // static async createUserByGoogle(req, res, next) {
 
-        try {
+    //     try {
 
-            const { profile } = req.body;
+    //         const { profile } = req.body;
 
-            const userData = await authService.registrationByGoogle(profile);
+    //         const userData = await authService.registrationByGoogle(profile);
 
-            res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
+    //         res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
 
-            return res.json(buildResponse(true, userData));
+    //         return res.json(buildResponse(true, userData));
 
-        } catch (error) {
+    //     } catch (error) {
 
-            next(error);
-        }
+    //         next(error);
+    //     }
 
-    }
+    // }
 
     static async authenticateUser(req, res, next) {
 
@@ -228,13 +228,13 @@ export default class authController {
     }
 
     static async refresh(req, res, next) {
+        console.log("refresh");
 
         try {
 
             const { refreshToken } = req.cookies;
 
             const userData = await authService.refresh(refreshToken);
-
 
             res.cookie('refreshToken', userData.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
 

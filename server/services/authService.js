@@ -48,43 +48,43 @@ class authService {
         }
     }
 
-    async registrationByGoogle(profile) {
-        try {
-            console.log("creating user by google");
-            const { id, emails, name } = profile;
-            const email = emails[0].value;
+    // async registrationByGoogle(profile) {
+    //     try {
+    //         console.log("creating user by google");
+    //         const { id, emails, name } = profile;
+    //         const email = emails[0].value;
     
-            // Проверка на существующего пользователя
-            const existingUser = await User.findOne({ google_id: id }) || await User.findOne({ email });
+    //         // Проверка на существующего пользователя
+    //         const existingUser = await User.findOne({ google_id: id }) || await User.findOne({ email });
     
-            if (existingUser) {
-                throw new Error("Email already exists!");
-            }
+    //         if (existingUser) {
+    //             throw new Error("Email already exists!");
+    //         }
     
-            const user = await User.create({
-                google_id: id,
-                email,
-                login: email, // вы можете использовать email в качестве логина или создать свою собственную логику
-                full_name: `${name.givenName} ${name.familyName}`,
-                role: 'user'
-            });
+    //         const user = await User.create({
+    //             google_id: id,
+    //             email,
+    //             login: email, // вы можете использовать email в качестве логина или создать свою собственную логику
+    //             full_name: `${name.givenName} ${name.familyName}`,
+    //             role: 'user'
+    //         });
     
-            const userDto = new UserDto(user);
-            const tokens = tokenService.generateTokens({ ...userDto });
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
+    //         const userDto = new UserDto(user);
+    //         const tokens = tokenService.generateTokens({ ...userDto });
+    //         await tokenService.saveToken(userDto.id, tokens.refreshToken);
     
-            return {
-                message: 'User created successfully',
-                userId: user._id,
-                tokens,
-                user: userDto
-            };
+    //         return {
+    //             message: 'User created successfully',
+    //             userId: user._id,
+    //             tokens,
+    //             user: userDto
+    //         };
     
-        } catch (error) {
-            console.error("Error creating user in service:", error);
-            throw error;
-        }
-    }
+    //     } catch (error) {
+    //         console.error("Error creating user in service:", error);
+    //         throw error;
+    //     }
+    // }
 
 
     async login(login, password) {
@@ -152,12 +152,16 @@ class authService {
     }
 
     async refresh(refreshToken) {
+        
         if (!refreshToken) {
             throw new Error("No token provided");
         }
+        
         const userData = tokenService.validateRefreshToken(refreshToken);
         const tokenFromDb = await tokenService.findToken(refreshToken);
 
+        // console.log("refreshToken:", refreshToken);
+        // console.log("tokenFromDb:", tokenFromDb)
 
         if (!userData || !tokenFromDb) {
             throw new Error("Invalid token");

@@ -2,11 +2,6 @@ import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 const userSchema = new mongoose.Schema({
-    google_id: {
-        type: String,
-        unique: true,
-        default: () => uuidv4(), // Генерируем UUID если google_id не предоставлен
-    },
     login: {
         type: String,
         unique: true,
@@ -15,7 +10,6 @@ const userSchema = new mongoose.Schema({
     password_hash: {
         type: String,
         required: true,
-        default: "GoogleAuth"
     },
     full_name: {
         type: String,
@@ -42,6 +36,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'user'
     }
+});
+
+userSchema.virtual('id').get(function() {
+    return this._id.toHexString();
+});
+
+userSchema.set('toJSON', {
+    virtuals: true
 });
 
 const User = mongoose.model('User', userSchema);
