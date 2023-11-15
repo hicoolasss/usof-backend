@@ -26,6 +26,13 @@ import Category from './models/Category.js';
 import passport from 'passport';
 
 import ("./utils/passportSetup.js")
+import { dirname } from 'path';
+
+
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 const app = express();
 const server = createServer(app);
@@ -40,6 +47,7 @@ app.use(cors({
     credentials: true,
 }));
 
+app.use('/uploads', express.static(__dirname + '/public'));
 app.use(cookieParser());
 app.use(fileUpload({}));
 app.use(express.json());

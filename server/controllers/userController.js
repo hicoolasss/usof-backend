@@ -49,8 +49,11 @@ export default class userController {
     static async uploadUserAvatar(req, res, next) {
         try {
 
-            const { userId } = req.body;
+            const { userId } = req.params;
             const avatarPath = req.files.avatar;
+
+            console.log("Upload avatar for user:", userId);
+            console.log("Avatar path:", avatarPath);
 
             const userData = await userService.uploadUserAvatar(userId, avatarPath);
 

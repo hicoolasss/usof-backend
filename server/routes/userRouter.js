@@ -32,9 +32,8 @@ router.get('/api/auth/refresh', authController.refresh);
 
 router.get('/api/users/', userController.getUsers);
 router.get('/api/users/:id', userController.getUserById);
-
 router.post('/api/users/', userController.createUserForAdmin);
-router.patch('/api/users/avatar', userController.uploadUserAvatar);
+router.patch('/api/users/:userId/avatar', userController.uploadUserAvatar);
 router.patch('/api/users/:userId', userController.updateUser);
 router.delete('/api/users/:userId', userController.deleteUser);
 

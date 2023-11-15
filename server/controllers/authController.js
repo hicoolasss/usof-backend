@@ -181,6 +181,8 @@ export default class authController {
 
             const token = uuidv4();
 
+            console.log("email:", email);
+
             await mailService.sendVerificationMail(email, token, `${process.env.API_URL}/api/auth/verify/${token}`);
 
             return res.json(buildResponse(true, { message: "Mail successfully sent" }));

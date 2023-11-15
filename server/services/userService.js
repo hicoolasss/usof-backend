@@ -25,7 +25,7 @@ class userService {
     
         try {
     
-            const user = await User.findById(userId).select('login email profile_picture_path rating role -_id');
+            const user = await User.findById(userId).select('login email profile_picture_path rating role _id');
     
             if (!user) {
                throw new Error("User not found");
@@ -85,12 +85,14 @@ class userService {
 
     async uploadUserAvatar(userId, file) {
         try {
+            console.log("Upload avatar for user:", userId);
             const user = await this.getUserById(userId);
             if (!user) {
                 throw new Error("User not found");
             }
+            console.log("User before update:", user);
             const avatar = file;
-            const uploadPath = path.join(__dirname, "..", "uploads", avatar.name); // Adjust the path if needed
+            const uploadPath = path.join(__dirname, "..", "public/uploads", avatar.name); // Adjust the path if needed
 
             // Using Promises for better error handling
             await new Promise((resolve, reject) => {
@@ -100,7 +102,8 @@ class userService {
                 });
             });
 
-            user.profile_picture_path = uploadPath;  // Use uploadPath here
+            user.profile_picture_path = avatar.name;  // Use uploadPath here
+            console.log("User ready to save:", user);
             await user.save();
 
             console.log("Avatar updated for user:", user);
