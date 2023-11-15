@@ -23,9 +23,7 @@ import connectToDb from './db.js';
 import router from './routes/userRouter.js';
 import Category from './models/Category.js';
 
-import passport from 'passport';
 
-import ("./utils/passportSetup.js")
 import { dirname } from 'path';
 
 
@@ -54,9 +52,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve('server/public')));
 
-
-
-app.use(passport.initialize());
 
 
 app.use(router);
