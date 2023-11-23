@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     },
     profile_picture_path: {
         type: String,
-        default: null
+        default: "porshe911_2.jpg"
     },
     rating: {
         type: Number,

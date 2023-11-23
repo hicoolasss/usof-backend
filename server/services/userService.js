@@ -15,7 +15,7 @@ class userService {
 
     async getAllUsers() {
         
-        const users = await User.find().select('login email profile_picture_path rating role -_id');
+        const users = await User.find().select('login email profile_picture_path full_name is_email_verified rating role _id');
         
         return users;
     
@@ -25,7 +25,7 @@ class userService {
     
         try {
     
-            const user = await User.findById(userId).select('login email profile_picture_path rating role _id');
+            const user = await User.findById(userId).select('login email profile_picture_path full_name is_email_verified rating role _id');
     
             if (!user) {
                throw new Error("User not found");
@@ -53,10 +53,6 @@ class userService {
             if (check_email) {
                 throw new Error("Email already exists!");
             }
-
-            console.log("Login:", login)
-            console.log("Password to hash:", password);
-
             const saltRounds = 10; // you can adjust this number based on your security requirement
             const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -85,12 +81,11 @@ class userService {
 
     async uploadUserAvatar(userId, file) {
         try {
-            console.log("Upload avatar for user:", userId);
             const user = await this.getUserById(userId);
+            console.log("User:", user);
             if (!user) {
                 throw new Error("User not found");
             }
-            console.log("User before update:", user);
             const avatar = file;
             const uploadPath = path.join(__dirname, "..", "public/uploads", avatar.name); // Adjust the path if needed
 
@@ -103,11 +98,11 @@ class userService {
             });
 
             user.profile_picture_path = avatar.name;  // Use uploadPath here
-            console.log("User ready to save:", user);
             await user.save();
 
-            console.log("Avatar updated for user:", user);
-            return user;
+            const userDto = new UserDto(user);
+
+            return userDto;
         } catch (error) {
             console.error("Error uploading user avatar:", error);
             throw error;
@@ -124,7 +119,9 @@ class userService {
                 throw new Error("User not found");
             }
 
-            return user; // Возвращаем обновленного пользователя
+            const userDto = new UserDto(user);
+
+            return userDto;
         } catch (error) {
             console.error("Error in updateUser:", error);
             throw error; // Передаем ошибку на уровень выше, чтобы контроллер мог ее обработать

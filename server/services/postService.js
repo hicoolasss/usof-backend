@@ -4,7 +4,7 @@ import Comment from "../models/Comment.js";
 class postService {
 
     async createPost(author_id, title, publish_date, status, content, categories) {
-        
+
         try {
             const post = await Post.create({
                 author_id,
@@ -27,7 +27,7 @@ class postService {
     }
 
     async likePost(postId, userId) {
-        
+
         try {
             const post = await Post.findById(postId);
 
@@ -147,7 +147,7 @@ class postService {
     }
 
     async getPosts() {
-        
+
         try {
 
             const posts = await Post.find();
@@ -162,14 +162,14 @@ class postService {
     }
 
     async createComment(postId, authorId, content) {
-        
+
         try {
             // Найти пост, к которому нужно добавить комментарий
             const post = await Post.findById(postId);
             if (!post) throw new Error('Post not found');
 
             // Создать объект комментария
-            const newComment = new Comment ({
+            const newComment = new Comment({
                 author_id: authorId,
                 content,
                 post: postId,
@@ -188,58 +188,57 @@ class postService {
                 message: 'Comment created successfully',
                 comment: newComment,
             };
-        
+
         } catch (error) {
-        
+
             console.error('Error in createComment service:', error);
             throw error; // Перебрасывание ошибки на уровень выше для обработки в контроллере
-        
+
         }
-    
+
     }
 
     async getPostById(postId) {
-        
         try {
             // Поиск поста по ID
-            const post = await Post.findById(postId).populate('author_id', 'login email profile_picture_path rating role -_id') // только перечисленные поля для автора, без _id
-            .populate({
-                path: 'comments.author_id',
-                select: 'login email profile_picture_path rating role -_id' // только перечисленные поля для авторов комментариев, без _id
-            });
+            const post = await Post.findById(postId)
 
             if (!post) {
                 throw new Error('Post not found');
             }
 
-            return post; // Если пост найден, вернуть его
-    
+            if (!post.author_id || typeof post.author_id.toHexString !== 'function') {
+                throw new Error('Invalid author_id for the post');
+            }
+
+            // Преобразование author_id в строку
+            const authorIdString = post.author_id.toHexString();
+
+            return post;
         } catch (error) {
-        
             console.error('Error in getPostById service:', error);
-            throw error; // Перебрасывание ошибки на уровень выше для обработки в контроллере
-        
+            throw error;
         }
-    
     }
+
 
     async getCommentsByPostId(postId) {
 
         try {
-        
+
             const post = await Post.findById(postId).populate('comments.author_id', 'login _id'); // Это только верно, если комментарии хранятся внутри поста в качестве массива вложенных документов.
-            
+
             if (!post) {
                 throw new Error('Post not found');
             }
-            
+
             return post.comments;
-        
+
         } catch (error) {
-        
+
             console.error("Error in getPostComments service:", error);
             throw error;
-        
+
         }
 
     }
@@ -249,11 +248,11 @@ class postService {
             // Найти пост по ID и заполнить связанные категории
             // Обратите внимание, что это работает, если у вас есть поле "categories" в вашем Post модели, которое хранит ссылки на объекты Category
             const post = await Post.findById(postId).populate('categories');
-    
+
             if (!post) {
                 throw new Error('Post not found');
             }
-    
+
             return post.categories;
         } catch (error) {
             console.error("Error in getAssociatedCategories service:", error);
@@ -266,11 +265,11 @@ class postService {
             // Найти пост по ID и заполнить связанные лайки
             // Обратите внимание, что это работает, если у вас есть поле "likes" в вашей модели Post, которое хранит ссылки на объекты Like
             const post = await Post.findById(postId).populate('likes');
-    
+
             if (!post) {
                 throw new Error('Post not found');
             }
-    
+
             return post.likes;
         } catch (error) {
             console.error("Error in getPostLikes service:", error);

@@ -1,5 +1,5 @@
 import Comment from "../models/Comment.js";
-
+import Post from "../models/Post.js";
 
 class commentsService {
 
@@ -118,9 +118,7 @@ class commentsService {
 
 
     async deleteCommentById(commentId, userId) {
-
         try {
-
             const comment = await Comment.findById(commentId);
 
             if (!comment) {
@@ -131,18 +129,24 @@ class commentsService {
                 throw new Error("You are not the author of this comment");
             }
 
+            const post = await Post.findById(comment.post);
+
+            if (!post) {
+                throw new Error("Post not found");
+            }
+
+            // Удалите комментарий из массива комментариев поста
+            post.comments.pull(commentId);
+            await post.save();
+
+            // Теперь удалите сам комментарий
             await comment.deleteOne({ _id: commentId });
 
             return { message: "Comment deleted successfully" };
-
-
         } catch (error) {
-
             console.error("Error in deleteCommentById service:", error);
             throw error;
-
         }
-
     }
 
 

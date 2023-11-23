@@ -121,7 +121,7 @@ export default class authController {
             const { email } = req.body;
 
             const token = uuidv4();
-            await mailService.sendResetPasswordMail(email, token, `${process.env.API_URL}/api/auth/password-reset/${token}`);
+            await mailService.sendResetPasswordMail(email, token, `${process.env.CLIENT_URL}/changePassword/${token}`);
 
             return res.json(buildResponse(true, { message: "Mail successfully sent" })); // 'sended' должно быть 'sent'
 
@@ -163,7 +163,7 @@ export default class authController {
             }
 
             // Здесь вы можете отобразить форму для ввода нового пароля или сделать другие действия.
-            return res.send('Here you can enter your new password');
+            return res.send(`${process.env.API_URL}/changePassword/${token}`);
 
         } catch (error) {
 
@@ -183,7 +183,7 @@ export default class authController {
 
             console.log("email:", email);
 
-            await mailService.sendVerificationMail(email, token, `${process.env.API_URL}/api/auth/verify/${token}`);
+            await mailService.sendVerificationMail(email, token, `${process.env.CLIENT_URL}/verify/${token}`);
 
             return res.json(buildResponse(true, { message: "Mail successfully sent" }));
 
@@ -225,6 +225,34 @@ export default class authController {
 
             next(error);
 
+        }
+
+    }
+
+    static async getUpdatedEmailVerificationStatus(req, res, next) {
+        try {
+            const token = req.params.token;
+
+            const verifyTokenEntry = await verifyEmailToken.findOne({ token });
+
+            if (!verifyTokenEntry) {
+                return res.status(400).json({ message: "Invalid or expired email verification token!" });
+            }
+
+            const user = await User.findById(verifyTokenEntry.userId).select('login email profile_picture_path is_email_verified rating role _id');;
+
+            if (!user) {
+                return res.status(400).json({ message: "User not found!" });
+            }
+
+            // Устанавливаем флаг is_email_verified в true
+            user.is_email_verified = true;
+
+            await user.save();  // Сохраняем изменения
+
+            res.json(buildResponse(true, { user, message: "Email successfully verified" }));
+        } catch (error) {
+            next(error);
         }
 
     }

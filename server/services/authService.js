@@ -170,6 +170,7 @@ class authService {
         if (!user) {
             throw new Error("Пользователь не найден");
         }
+        
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({ ...userDto });
 
