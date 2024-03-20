@@ -61,7 +61,7 @@ export default class authController {
             console.log("Password:", password);
 
             const userData = await authService.login(login, password);
-            res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
+            res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'none', secure: true });
 
             return res.json(buildResponse(true, userData));
 
