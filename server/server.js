@@ -33,6 +33,11 @@ const __dirname = dirname(__filename);
 
 
 const app = express();
+app.use(cors({
+    origin: true,
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
+}));
 const server = createServer(app);
 
 const navigation = {
@@ -40,11 +45,6 @@ const navigation = {
     icon: 'Users',
 }
 
-app.use(cors({
-    origin: true,
-    credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-}));
 
 app.use('/uploads', express.static(__dirname + '/public'));
 app.use(cookieParser());
