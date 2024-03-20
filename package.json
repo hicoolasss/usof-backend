@@ -8,6 +8,8 @@
     "@adminjs/express": "^6.0.1",
     "@adminjs/mongoose": "^4.0.0",
     "@adminjs/sql": "^2.2.1",
+    "@react-email/components": "0.0.12",
+    "@react-email/render": "^0.0.10",
     "@shopify/draggable": "^1.1.1",
     "adminjs": "^7.2.2",
     "bcrypt": "^5.1.1",

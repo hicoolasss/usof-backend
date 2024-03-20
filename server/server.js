@@ -41,8 +41,9 @@ const navigation = {
 }
 
 app.use(cors({
-    origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_PROD],
+    origin: true,
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 }));
 
 app.use('/uploads', express.static(__dirname + '/public'));
