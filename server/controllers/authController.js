@@ -20,7 +20,7 @@ export default class authController {
 
             const userData = await authService.registration(login, password, email, role);
 
-            res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true });
+            res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 180 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'None', secure: true });
 
             return res.json(buildResponse(true, userData));
 
